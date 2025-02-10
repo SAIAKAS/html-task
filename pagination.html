@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagination using DOM</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            padding: 0;
+        }
+        .pagination li {
+            margin: 5px;
+            padding: 10px 15px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .pagination li.active {
+            background: #0056b3;
+        }
+        .content {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Pagination using DOM Manipulation</h2>
+        <div id="content" class="content"></div>
+        <ul id="pagination" class="pagination"></ul>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const itemsPerPage = 5;
+            const totalItems = 25;
+            let currentPage = 1;
+
+            function generatePagination() {
+                const pagination = document.getElementById("pagination");
+                pagination.innerHTML = "";
+
+                for (let i = 1; i <= Math.ceil(totalItems / itemsPerPage); i++) {
+                    let li = document.createElement("li");
+                    li.textContent = i;
+                    li.addEventListener("click", function() {
+                        currentPage = i;
+                        displayItems();
+                        generatePagination();
+                    });
+                    if (i === currentPage) {
+                        li.classList.add("active");
+                    }
+                    pagination.appendChild(li);
+                }
+            }
+
+            function displayItems() {
+                const content = document.getElementById("content");
+                content.innerHTML = "";
+                let start = (currentPage - 1) * itemsPerPage + 1;
+                let end = start + itemsPerPage;
+                for (let i = start; i < end && i <= totalItems; i++) {
+                    let div = document.createElement("div");
+                    div.textContent = `Item ${i}`;
+                    content.appendChild(div);
+                }
+            }
+
+            displayItems();
+            generatePagination();
+        });
+    </script>
+
+    <!-- Test Suite -->
+    <script>
+        function runTests() {
+            console.assert(document.getElementById("pagination") !== null, "Pagination element should exist.");
+            console.assert(document.getElementById("content") !== null, "Content area should exist.");
+            console.assert(document.querySelectorAll(".pagination li").length > 0, "Pagination items should be generated.");
+            console.log("All tests passed!");
+        }
+        window.onload = runTests;
+    </script>
+</body>
+</html>
